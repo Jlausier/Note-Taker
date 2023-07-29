@@ -1,7 +1,7 @@
 const express = require('express');
 const fs = require('fs');
 const path = require('path');
-
+const termData = require('./db/db.json');
 const app = express();
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
@@ -18,7 +18,7 @@ app.get("/", (req, res) => {
 app.get("/api/notes", (req, res) => {
   
 
-  fs.readFile(path.join(__dirname, "db", "db.json"), "utf8", (err, data) => {
+  fs.readFile(path.join(__dirname, "db", termData), "utf8", (err, data) => {
     if (err) {
       console.error(err);
       return res.status(500).json({ error: "Failed to read notes" });
@@ -34,7 +34,7 @@ app.post("/api/notes", (req, res) => {
     return res.status(400).json({ error: "Title and text are required" });
   }
 
-  fs.readFile(path.join(__dirname, "db", "db.json"), "utf8", (err, data) => {
+  fs.readFile(path.join(__dirname, "db", termData), "utf8", (err, data) => {
     if (err) {
       console.error(err);
       return res.status(500).json({ error: "Failed to read notes" });
@@ -45,7 +45,7 @@ app.post("/api/notes", (req, res) => {
     notes.push(newNote);
 
     fs.writeFile(
-      path.join(__dirname, "db", "db.json"),
+      path.join(__dirname, "db", termData),
       JSON.stringify(notes),
       "utf8",
       (err) => {
@@ -63,7 +63,7 @@ app.post("/api/notes", (req, res) => {
 app.delete("/api/notes/:id", (req, res) => {
   const noteId = parseInt(req.params.id);
 
-  fs.readFile(path.join(__dirname, "db", "db.json"), "utf8", (err, data) => {
+  fs.readFile(path.join(__dirname, "db", termData), "utf8", (err, data) => {
     if (err) {
       console.error(err);
       return res.status(500).json({ error: "Failed to read notes" });
