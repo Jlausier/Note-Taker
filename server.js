@@ -8,17 +8,19 @@ app.use(express.json());
 app.use(express.static("public"));
 
 
-const PORT =  3001
+const PORT = process.env.PORT || 3001
 // Route to serve the main HTML page
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "index.html"));
 });
-
+app.get("/notes", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "notes.html"));
+});
 // Route to read existing notes from the JSON file
 app.get("/api/notes", (req, res) => {
   
 
-  fs.readFile(path.join(__dirname, "db", termData), "utf8", (err, data) => {
+  fs.readFile(path.join(__dirname, "db", "db.json"), "utf8", (err, data) => {
     if (err) {
       console.error(err);
       return res.status(500).json({ error: "Failed to read notes" });
@@ -34,7 +36,7 @@ app.post("/api/notes", (req, res) => {
     return res.status(400).json({ error: "Title and text are required" });
   }
 
-  fs.readFile(path.join(__dirname, "db", termData), "utf8", (err, data) => {
+  fs.readFile(path.join(__dirname, "db", "db.json"), "utf8", (err, data) => {
     if (err) {
       console.error(err);
       return res.status(500).json({ error: "Failed to read notes" });
@@ -45,7 +47,7 @@ app.post("/api/notes", (req, res) => {
     notes.push(newNote);
 
     fs.writeFile(
-      path.join(__dirname, "db", termData),
+      path.join(__dirname, "db", "db.json"),
       JSON.stringify(notes),
       "utf8",
       (err) => {
@@ -63,7 +65,7 @@ app.post("/api/notes", (req, res) => {
 app.delete("/api/notes/:id", (req, res) => {
   const noteId = parseInt(req.params.id);
 
-  fs.readFile(path.join(__dirname, "db", termData), "utf8", (err, data) => {
+  fs.readFile(path.join(__dirname, "db", "db.json"), "utf8", (err, data) => {
     if (err) {
       console.error(err);
       return res.status(500).json({ error: "Failed to read notes" });
